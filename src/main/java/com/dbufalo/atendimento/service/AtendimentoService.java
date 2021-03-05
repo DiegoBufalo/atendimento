@@ -76,7 +76,27 @@ public class AtendimentoService {
 					return atendimento;
 					
 				});
-}
+	}
+	
+	public Mono<AtendimentoUsuario> finalizarAtendimento(Integer id, Atendimento atendimento) {
+		return atendimentoRepository.findById(id)
+				.flatMap(x->{
+					x.setLogAtendimento(atendimento.getLogAtendimento());
+					
+					return Mono.just(x);
+				})
+				.flatMap(x -> atendimentoRepository.save(x))
+				.flatMap(x ->{
+					
+					Mono<AtendimentoUsuario> atendimentoUsuario = null;
+					try {
+						atendimentoUsuario = AtendimentoUsuario.fromEntity(x,buscaUsuario(x.getIdUsuario()));
+					} catch (InterruptedException | ExecutionException e) {
+						e.printStackTrace();
+					}
+					return atendimentoUsuario;
+				});
+	}
 	
 	public String buscaUsuario(Integer id) throws InterruptedException, ExecutionException {
 		return webUsuario

@@ -39,4 +39,9 @@ public class AtendimentoController {
 		return atendimentoService.buscarAtendimentosUsuario(id);
 	}
 	
+	@PostMapping("finalizar/{id}")
+	public Mono<AtendimentoUsuario> finalizarAtendimento(@RequestBody Atendimento atendimento, @PathVariable Integer id){
+		return atendimentoService.finalizarAtendimento(id, atendimento);
+	}
+	
 }
